@@ -1,0 +1,27 @@
+{
+  "name": "threejs-starter-kit",
+  "version": "0.0.1",
+  "description": "threejs starter kit for threejs beginner workshop",
+  "main": "index.js",
+  "module": "main.js",
+  "dependencies": {
+    "three": "^0.126.1"
+  },
+  "devDependencies": {
+    "serve": "^11.3.2",
+    "webpack": "^5.24.3",
+    "webpack-cli": "^4.5.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "start": "serve dist -p 3123",
+    "build:start": "npm run build && npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.drp.digital:George.Campbell/threejs-starter-kit.git"
+  },
+  "author": "",
+  "license": "ISC"
+}
