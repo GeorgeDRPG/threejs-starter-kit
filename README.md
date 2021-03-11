@@ -28,3 +28,44 @@ cd to your projects directory, where you want to clone the threejs-starter-kit a
 Look in `package.json` scripts to see what scripts you can run. For example:
 
 `npm run build:start` or `yarn build:start` - this will build and serve the project, and be accessible from http://localhost:3123 in your browser.
+
+# Workshop
+
+Create your own branch to play in e.g.
+
+`git checkout -b my-cool-sandbox`
+
+Feel free to commit and push code to your branch, and share your creations.
+
+The objectives in this workshop are below:
+
+1. Give geometry a material
+2. Add lighting to the scene
+3. Add a plane geometry and enable shadows
+4. Add OrbitControls, talk about three.js JSM example modules
+5. Give box a texture like a crate or a building
+6. Load .gltf model to scene
+
+Hopefully in the workshop we will have time to achieve at least a few of these.
+
+# Links
+
+Here are some links you may find useful
+
+> The official three.js website
+https://threejs.org/
+
+> BoxGeometry reference
+https://threejs.org/docs/index.html#api/en/geometries/BoxGeometry
+
+> Example with code of instanced buffer geometry
+https://threejs.org/examples/?q=instanc#webgl_buffergeometry_instancing_interleaved
+
+> Example with code of physics
+https://threejs.org/examples/?q=instanc#physics_ammo_instancing
+
+> More useful links
+https://threejs.org/docs/index.html#manual/en/introduction/Useful-links
+
+
+
