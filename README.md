@@ -38,7 +38,7 @@ Otherwise just
 
 Look in `package.json` scripts to see what scripts you can run. For example:
 
-`npm run build:start` or `yarn build:start` - this will build and serve the project, and be accessible from http://localhost:3123 in your browser.
+`npm start` or `yarn start` - this will build and serve the project, and be accessible from http://localhost:3123 in your browser. It will reload on save.
 
 # Workshop
 
@@ -49,7 +49,7 @@ Create your own branch to play in e.g.
 Feel free to commit and push code to your branch, and share your creations.
 
 The objectives in this workshop are below:
-
+0. 
 1. Give geometry a material
 2. Add lighting to the scene
 3. Add a plane geometry and enable shadows
