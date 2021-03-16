@@ -9,6 +9,7 @@ function initRenderer(rootElement, options = {}){
     ...options
   });
 
+  renderer.shadowMap.enabled = true
   // device pixel ratio is usually 1 but can be different based on the device. lower this number to increase performance but decrease resolution.
   renderer.setPixelRatio(window.devicePixelRatio)
 
