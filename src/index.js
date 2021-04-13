@@ -5,7 +5,20 @@ import initialiseThree from "./initialiseThree"
 window.onload = onLoad
 const PI = Math.PI
 function onLoad(){
-  const { renderer, camera, scene, cleanup } = initialiseThree()
+  const rendererOpts = {
+    antialias: true
+  }
+
+  const cameraOpts = {
+    type: 'perspective',
+    near: 0.1,
+    far: 1000,
+  }
+
+  const { renderer, camera, scene, cleanup } = initialiseThree(rendererOpts, cameraOpts)
+
+  // for dynamic shadows to work, this needs to be set to true
+  renderer.shadowMap.enabled = true;
 
   camera.position.z = 3
   camera.position.y = 2
@@ -34,18 +47,13 @@ function onLoad(){
 
   scene.add(sphere)
 
-  const ambLight = new AmbientLight(0x404040, 0.7)
+  const ambLight = new AmbientLight(0xFF7700, 0.7)
 
   scene.add(ambLight)
 
   const spotLight = new SpotLight( 0xffffff, 0.5 );
   spotLight.position.y = 4
-//   const d = 1000;
-
-// spotLight.shadow.camera.left = - d;
-// spotLight.shadow.camera.right = d;
-// spotLight.shadow.camera.top = d;
-// spotLight.shadow.camera.bottom = - d;
+  
   const spotLightHelper = new SpotLightHelper(spotLight);
   scene.add(spotLightHelper);
   spotLight.castShadow = true
