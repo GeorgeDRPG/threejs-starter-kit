@@ -17,6 +17,7 @@ import {
   PCFSoftShadowMap,
 } from "three"
 import startMainLoop from "./utils/startMainLoop"
+import { OrbitControls } from "./utils/orbitControls"
 import initialiseThree from "./initialiseThree"
 
 window.onload = onLoad
@@ -28,9 +29,16 @@ function onLoad(){
   renderer.shadowMap.type = PCFSoftShadowMap; // default THREE.PCFShadowMap
 
   // Scene camera positions: z = depth, x = left/ right, y = up/ down
-  camera.position.z = 7
-  camera.position.y = 3
-  camera.position.x = 0
+  // camera.position.z = 7
+  // camera.position.y = 3
+  // camera.position.x = 0
+
+  // Create Orbit Controls
+  const controls = new OrbitControls( camera, renderer.domElement );
+
+  //controls.update() must be called after any manual changes to the camera's transform
+  camera.position.set( 0, 3, 7 );
+  controls.update();
 
   // Create Ambient lighting for the scene
   const ambLight = new AmbientLight(0xcccccc, 0.4)
@@ -71,7 +79,7 @@ function onLoad(){
   })
 
   const sphere = new Mesh(sphereGeometry, sphereMaterial)
-  sphere.position.y = 1
+  sphere.position.y = 1.2
   sphere.castShadow = true; //default is false
   sphere.receiveShadow = false; //default
   scene.add(sphere)
@@ -84,31 +92,31 @@ function onLoad(){
   })
 
   const cone = new Mesh(coneGeometry, coneMaterial)
-  cone.position.y = 1
+  cone.position.y = 1.7
   cone.position.x = -4
   cone.castShadow = true; //default is false
   cone.receiveShadow = false; //default
   scene.add(cone)
 
-  // Create shape object (torus) - add size, material, colour/ texture and positioning
+  // Create shape object (torusKnot) - add size, material, colour/ texture and positioning
   const torusGeometry = new TorusKnotBufferGeometry(1, 0.4, 64, 8)
   const torusMaterial = new MeshStandardMaterial({
     // wireframe: true,
     color: 0x0040ff,
   })
 
-  const torus = new Mesh(torusGeometry, torusMaterial)
-  torus.position.y = 1.7
-  torus.position.x = 4
-  torus.castShadow = true; //default is false
-  torus.receiveShadow = false; //default
-  scene.add(torus)
+  const torusKnot = new Mesh(torusGeometry, torusMaterial)
+  torusKnot.position.y = 2
+  torusKnot.position.x = 4
+  torusKnot.castShadow = true; //default is false
+  torusKnot.receiveShadow = false; //default
+  scene.add(torusKnot)
 
   // Create text shape with custom font - add size, material, colour/ texture and positioning
   const loader = new FontLoader();
 
   loader.load( 'https://threejs.org/examples/fonts/optimer_regular.typeface.json', function (font) {
-    const textGeometry = new TextGeometry( 'Welcome to the Universe!', {
+    const textGeometry = new TextGeometry( 'Welcome to my Universe!', {
       font: font,
       size: 0.5,
       height: 0.5,
@@ -139,13 +147,24 @@ function onLoad(){
   function onLoop() {
     sphere.rotation.y -= 0.01
     cone.rotation.y -= 0.01
-    torus.rotation.y -= 0.01
+    torusKnot.rotation.y -= 0.01
     renderer.render(scene, camera)
+  }
+
+  function animate() {
+    requestAnimationFrame( animate );
+
+    // required if controls.enableDamping or controls.autoRotate are set to true
+    controls.update();
+
+    renderer.render( scene, camera );
+
   }
 
   const stopMainLoop = startMainLoop(onLoop)
 
   window.onbeforeunload = () => {
+    animate()
     cleanup()
     stopMainLoop()
   }
