@@ -1,10 +1,14 @@
 import {
   SphereBufferGeometry,
   TorusKnotBufferGeometry,
-  CylinderBufferGeometry,
+  ConeBufferGeometry,
+  TextGeometry,
   CameraHelper,
+  DirectionalLightHelper,
+  FontLoader,
   Mesh,
   MeshStandardMaterial,
+  MeshNormalMaterial,
   TextureLoader,
   AmbientLight,
   DirectionalLight,
@@ -33,7 +37,7 @@ function onLoad(){
   scene.add(ambLight)
 
   // Create Directional lighting for the scene
-  const dirLight = new DirectionalLight(0xffffff, 1, 100)
+  const dirLight = new DirectionalLight(0xffffff, 1)
   dirLight.position.set( 0, 1, 0 );
   dirLight.castshadow = true
   dirLight.shadow.mapSize.width = 512;
@@ -47,6 +51,7 @@ function onLoad(){
   const planeGeometry = new PlaneBufferGeometry(20, 20, 32, 32 )
   const planeMaterial = new MeshStandardMaterial({
     // wireframe: true,
+    // color: 0xffff00,
     map: planeTexture,
     side: DoubleSide,
   })
@@ -71,19 +76,19 @@ function onLoad(){
   sphere.receiveShadow = false; //default
   scene.add(sphere)
 
-  // Create shape object (cylinder) - add size, material, colour/ texture and positioning
-  const cylinderGeometry = new CylinderBufferGeometry(1, 1, 2, 16 )
-  const cylinderMaterial = new MeshStandardMaterial({
+  // Create shape object (cone) - add size, material, colour/ texture and positioning
+  const coneGeometry = new ConeBufferGeometry( 1, 3, 8 )
+  const coneMaterial = new MeshStandardMaterial({
     // wireframe: true,
     color: 0xff0040,
   })
 
-  const cylinder = new Mesh(cylinderGeometry, cylinderMaterial)
-  cylinder.position.y = 1
-  cylinder.position.x = -4
-  cylinder.castShadow = true; //default is false
-  cylinder.receiveShadow = false; //default
-  scene.add(cylinder)
+  const cone = new Mesh(coneGeometry, coneMaterial)
+  cone.position.y = 1
+  cone.position.x = -4
+  cone.castShadow = true; //default is false
+  cone.receiveShadow = false; //default
+  scene.add(cone)
 
   // Create shape object (torus) - add size, material, colour/ texture and positioning
   const torusGeometry = new TorusKnotBufferGeometry(1, 0.4, 64, 8)
@@ -99,14 +104,41 @@ function onLoad(){
   torus.receiveShadow = false; //default
   scene.add(torus)
 
+  // Create text shape with custom font - add size, material, colour/ texture and positioning
+  const loader = new FontLoader();
+
+  loader.load( 'https://threejs.org/examples/fonts/optimer_regular.typeface.json', function (font) {
+    const textGeometry = new TextGeometry( 'Welcome to the Universe!', {
+      font: font,
+      size: 0.5,
+      height: 0.5,
+      curveSegments: 4,
+      bevelEnabled: true,
+      bevelThickness: 0.02,
+      bevelSize: 0.05,
+      bevelSegments: 3
+    });
+
+    textGeometry.center();
+
+    const textMaterial = new MeshNormalMaterial()
+
+    const text = new Mesh(textGeometry, textMaterial)
+    text.position.y = 5
+    text.castShadow = true; //default is false
+    text.receiveShadow = false; //default
+    scene.add(text)
+  });
+
   // Helpers
-  const helper = new CameraHelper( dirLight.shadow.camera );
-  scene.add( helper );
+  const cameraHelper = new CameraHelper( dirLight.shadow.camera );
+  const directionalLightHelper = new DirectionalLightHelper( dirLight, 0.8 );
+  scene.add( cameraHelper, directionalLightHelper);
 
   // Set looping animation of objects
   function onLoop() {
     sphere.rotation.y -= 0.01
-    cylinder.rotation.y -= 0.01
+    cone.rotation.y -= 0.01
     torus.rotation.y -= 0.01
     renderer.render(scene, camera)
   }
