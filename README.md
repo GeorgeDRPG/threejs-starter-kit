@@ -49,7 +49,7 @@ Create your own branch to play in e.g.
 Feel free to commit and push code to your branch, and share your creations.
 
 The objectives in this workshop are below:
-0. 
+0. Change geometry
 1. Give geometry a material
 2. Add lighting to the scene
 3. Add a plane geometry and enable shadows
