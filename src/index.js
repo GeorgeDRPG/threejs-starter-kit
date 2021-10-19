@@ -1,70 +1,84 @@
-import { SphereGeometry, Mesh, MeshStandardMaterial, AmbientLight, DirectionalLight, PlaneBufferGeometry, DoubleSide, DirectionalLightHelper, TextureLoader } from "three"
+import {
+  IcosahedronGeometry,
+  Mesh,
+  MeshStandardMaterial,
+  AmbientLight,
+  SpotLight,
+  PlaneBufferGeometry,
+  DoubleSide,
+  SpotLightHelper,
+  TextureLoader,
+} from "three";
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import startMainLoop from "./utils/startMainLoop"
-import initialiseThree from "./initialiseThree"
+import startMainLoop from "./utils/startMainLoop";
+import initialiseThree from "./initialiseThree";
 
-window.onload = onLoad
+window.onload = onLoad;
 
-function onLoad(){
-  
+const PI = Math.PI;
+function onLoad() {
+  const rendererOpts = {
+    antialias: true,
+  };
+
+  const cameraOpts = {
+    type: "perspective",
+    near: 0.1,
+    far: 1000,
+  };
   const sunnyTexture = new TextureLoader().load( 'sunny.jpg' );
-  const { renderer, camera, scene, cleanup } = initialiseThree()
+  const { renderer, camera, scene, cleanup } = initialiseThree(
+    rendererOpts,
+    cameraOpts
+  );
 
-  renderer.shadowMap.enabled = true
+  // For dynamic shadows to work, this needs to be set to true
+  renderer.shadowMap.enabled = true;
 
-  camera.position.z = 3
-  camera.position.y = 2
+  // Camera positions z = depth, x = left/ right, y = up/ down
+  camera.position.z = 3;
+  camera.position.y = 2;
 
-  const planeGeometry = new PlaneBufferGeometry(10, 10)
+  // Create Plane object - Add size, shape, material and colour
+  const planeGeometry = new PlaneBufferGeometry(10, 10);
   const planeMaterial = new MeshStandardMaterial({
-    color: 0x886644,
-    side: DoubleSide
-  })
-  const plane = new Mesh(planeGeometry, planeMaterial)
-  plane.rotation.x = Math.PI/2
-  plane.receiveShadow = true
+    color: 0x0000ff,
+    side: DoubleSide,
+  });
+  const plane = new Mesh(planeGeometry, planeMaterial);
+  plane.rotation.x = Math.PI / 2;
+  plane.receiveShadow = true;
 
-  scene.add(plane)
-  
+  scene.add(plane);
 
-  const sphereGeometry = new SphereGeometry(1, 16, 16)
+  // Create shape object (sphere in this case) - add size, material, colour and positioning
+
+  const sphereGeometry = new IcosahedronGeometry(1, 2);
   const sphereMaterial = new MeshStandardMaterial({
     map: sunnyTexture
   })
-  const sphere = new Mesh(sphereGeometry, sphereMaterial)
-  sphere.castShadow = true
-  sphere.position.y = 2
+  const sphere = new Mesh(sphereGeometry, sphereMaterial);
 
-  scene.add(sphere)
+  sphere.position.y = 2;
 
-  const ambLight = new AmbientLight(0x404040, 0.7)
+  sphere.castShadow = true;
 
-  scene.add(ambLight)
+  scene.add(sphere);
 
-  const directionalLight = new DirectionalLight( 0xffffff, 0.5 );
+  // Create Ambient lighting for the scene
+  const ambLight = new AmbientLight(0xff7700, 0.7);
 
-  const directionalLighHelper = new DirectionalLightHelper( directionalLight, 5 );
-  scene.add( directionalLighHelper );
+  scene.add(ambLight);
 
- 
-  scene.add( directionalLight );
+  // Create Spot light for the scene and a spotlight 'helper' to highlight where it is
+  const spotLight = new SpotLight(0xffffff, 0.5);
+  spotLight.position.y = 4;
 
-  directionalLight.castShadow = true
-
-  directionalLight.position.y = 5
-
-  const d = 10
-  directionalLight.shadow.camera.left = - d;
-  directionalLight.shadow.camera.right = d;
-  directionalLight.shadow.camera.top = d;
-  directionalLight.shadow.camera.bottom = - d;
-  directionalLight.shadow.camera.near = 0.1;
-  directionalLight.shadow.camera.far = d;
-
-  directionalLight.shadow.mapSize.width = 1024
-  directionalLight.shadow.mapSize.height = 1024
-
+  const spotLightHelper = new SpotLightHelper(spotLight);
+  scene.add(spotLightHelper);
+  spotLight.castShadow = true;
+  scene.add(spotLight);
 
   new OrbitControls( camera, renderer.domElement );
 
@@ -72,17 +86,23 @@ function onLoad(){
     scene.add( gltf.scene );
   })
 
-  function onLoop(){
-    sphere.rotation.y -= 0.01
+  // Function called on every frame
+  // this moves (translation) the spot light and rotates the sphere
+  function onLoop() {
+    const t = performance.now() / 1000;
+    spotLight.position.x = Math.sin((t / 12) * PI * 2) * 4;
+    spotLight.position.z = Math.cos((t / 20) * PI * 2) * 4;
+    spotLight.position.y = Math.cos((t / 15) * PI * 2) * 2 + 4;
 
-    renderer.render(scene, camera)
+    sphere.rotation.y -= 0.01;
+
+    renderer.render(scene, camera);
   }
 
-  const stopMainLoop = startMainLoop(onLoop)
+  const stopMainLoop = startMainLoop(onLoop);
 
   window.onbeforeunload = () => {
-    cleanup()
-    stopMainLoop()
-  }
+    cleanup();
+    stopMainLoop();
+  };
 }
-
